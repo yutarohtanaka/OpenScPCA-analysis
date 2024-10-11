@@ -3,17 +3,25 @@
 ## Description
 
 Here, we perform cell type annotation for the samples in the Osteosarcoma snRNA-seq (SCPCP000017) dataset (n = 27) provided on the Alex's Lemonade Stand Open single-cell Pediatric Cancer Atlas (scPCA) portal. 
-We describe and provide the scripts and intermediate files necessary to perform this analysis in this folder.  
+We describe and provide the scripts and intermediate files necessary to perform this analysis in this folder. We've aimed to make the scripts as transferable to other datasets as possible. 
 
 ## Usage
 
 We assume that the data has first been downloaded as described below, and the working directory is at `~/OpenScPCA-analysis`. We recommend users perform this analysis in a virtual environment to prevent any library conflicts. 
 
-0. install all requirements. 
-    - `pip3 install -r analyses/celltype-annotation-osteosarcoma/requirements.txt` 
-1. first, we remove all of the cells annotated as doublets. the output files will be stored as `results/step1-processing/{sample-id}.h5ad` files. the statistics for this step will be saved in `results/step1-processing/processing_stats.csv`.
-    - `python3 analyses/celltype-annotation-osteosarcoma/scripts/step1-preprocessing.py`
-2. 
+0. **Environment Prep**
+install all requirements. 
+    - **`pip3 install -r analyses/celltype-annotation-osteosarcoma/requirements.txt`**
+1. **Doublet Removal**
+first, we remove all of the cells annotated as doublets. the output files will be stored as `results/step1-processing/{sample-id}.h5ad` files. the statistics for this step will be saved in `results/step1-processing/processing_stats.csv`.
+    - **`python3 analyses/celltype-annotation-osteosarcoma/scripts/step1-preprocessing.py`**
+2. **Scoring Cell Type Gene Sets**
+next, we run AUCell per sample on the cell type marker gene sets to score the nuclei on the cell types we broadly expect to see in this dataset. we use the `results/step1-processing/{sample-id}.h5ad` files as input, and we will score these and save them as `results/step2-processing/{sample-id}.csv` files. additionally, we generate a `results/step2-processing/{sample-id}.png` file with the UMAP visualization of the sample, coloured with clustering performed and scoring-based cell types.  
+    - **`python3 analyses/celltype-annotation-osteosarcoma/scripts/step2-celltype-aucell.py`**
+3. **Orthogonal Validation of Cell Type Annotations**
+
+4. **Annotation of Malignant Cells**
+5. **Post-Processing, Compilation**
 
 ## Input files
 
@@ -27,6 +35,18 @@ Additionally, we provide a manually compiled dataset of marker genes (`celltype-
 
 ## Output files
 
+We have intentionally made incremental saves after each step of the cell type annotation analysis workflow described here, to make it easier to rerun from intermediate steps if necessary.
+
+```
+results
+├── step1-processing
+│   ├── {sample-id}.h5ad #contains the raw AnnData object with detected doublets removed.
+│   └── processing_stats.csv #pre/post doublet removal stats.
+├── step2-processing
+│   ├── {sample-id}.csv #contains the cell type scores and inferred cell type.  
+│   ├── {sample-id}.png #UMAP visualization w/ clustering and scoring-based cell type annotations.
+└── README.md
+```
 
 ## Software requirements
 

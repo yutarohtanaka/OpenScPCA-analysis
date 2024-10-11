@@ -69,5 +69,7 @@ def preprocessing(folder = 'data/2024-08-22/SCPCP000017'):
     stats_all = pd.DataFrame(stats_all, columns = ['sample_id', 'n_obs_original', 'n_vars_original', 'n_obs_post_doublet_removal', 'n_vars_post_doublet_removal'])
     stats_all.to_csv(out_folder + '/processing_stats.csv', index=False)
 
+############################################################################################################
+
 if __name__ == '__main__':
     preprocessing()
