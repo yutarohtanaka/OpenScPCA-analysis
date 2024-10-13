@@ -24,8 +24,10 @@ we perform a number of different orthogonal validations of the annotated cell ty
         -  **`python3 analyses/celltype-annotation-osteosarcoma/scripts/step3-1-merge.py`**
 4. **Annotation of Malignant Cells**
 after the "normal" cell types have been annotated, we next perform malignant cell inference using infercnvpy. given that osteosarcoma is known to arise from an mesenchymal lineage (specifically osteoblastic), we use the non-mesenchymal cells as the "control" cells, and test for copy number alterations in mesenchymal annotated cells. as some samples have very few non-mesenchymal cells, we subsample 10% of all non-mesenchymal cells in the overall cohort, and use this as the uniform "control" dataset across all of the samples. 
-    -   **`python3 analyses/celltype-annotation-osteosarcoma/scripts/step4-infercnv.py`**
+    - **`python3 analyses/celltype-annotation-osteosarcoma/scripts/step4-infercnv.py`**
 5. **Post-Processing, Compilation**
+we combine all of the annotations made in previous steps, and compile it into one csv file. 
+    - **`python3 analyses/celltype-annotation-osteosarcoma/scripts/step5-compile.py`**
 
 ## Input files
 
@@ -57,6 +59,8 @@ results
 │   ├── normal-subsampled-cells.h5ad #downsampled object of normal cell type-annotated nuclei to use as the control dataset
 │   ├── {sample-id}_infercnv_out.h5ad #infercnv results for each sample
 │   ├── all_samples_malignant_cell_annotation.csv #malignant cell annotations for all mesenchymal cells in the cohort
+├── celltype-annotations
+│   ├── all-samples-annotations.csv #cell type annotations made for all samples. 
 └── README.md
 ```
 
@@ -66,5 +70,5 @@ We perform this annotation in a Python (3.9.2) environment. All other libraries 
 
 ## Computational resources
 
-We are performing this on our lab's Google Cloud environment with a Virtual Machine (e2-standard-32) instance. 
+We have performed this analysis on our lab's Google Cloud environment with a Virtual Machine (e2-standard-32) instance. 
 A smaller machine may be able to perform this analysis, but we have not tested this. 

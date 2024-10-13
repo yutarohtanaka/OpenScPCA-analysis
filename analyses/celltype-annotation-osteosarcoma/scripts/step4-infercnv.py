@@ -99,8 +99,11 @@ def determine_malignant_cells(adata_sample, normal_cell_types, cell_type_str = '
     
 ############################################################################################################
 
-def run_infercnv(adata_path = 'analyses/celltype-annotation-osteosarcoma/results/step3-processing/all-samples.h5ad',
-                 out_folder = 'analyses/celltype-annotation-osteosarcoma/results/step4-processing'):
+def run_infercnv(normal_cell_types = ['B', 'Endothelial', 'NK/T', 'Epithelial', 'Myeloid', 'Osteoclast'],
+        adata_path = 'analyses/celltype-annotation-osteosarcoma/results/step3-processing/all-samples.h5ad',
+        out_folder = 'analyses/celltype-annotation-osteosarcoma/results/step4-processing'):
+    
+    #first, make sure the output folder exists
     os.makedirs(out_folder, exist_ok = True)
     #read in anndata object
     adata = sc.read_h5ad(adata_path)
@@ -108,7 +111,6 @@ def run_infercnv(adata_path = 'analyses/celltype-annotation-osteosarcoma/results
     adata = map_chr_coordinates(adata)
 
     #make the downsampled "control" population
-    normal_cell_types = ['B', 'Endothelial', 'NK/T', 'Epithelial', 'Myeloid', 'Osteoclast']
     subsampled_normal_pop = downsample(adata, cell_type_str='cell_type', 
                                        normal_cell_types = normal_cell_types,
                                        out_path = out_folder + '/normal-subsampled-cells.h5ad')
