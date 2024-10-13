@@ -19,8 +19,12 @@ first, we remove all of the cells annotated as doublets. the output files will b
 next, we run AUCell per sample on the cell type marker gene sets to score the nuclei on the cell types we broadly expect to see in this dataset. we use the `results/step1-processing/{sample-id}.h5ad` files as input, and we will score these and save them as `results/step2-processing/{sample-id}.csv` files. additionally, we generate a `results/step2-processing/{sample-id}.png` file with the UMAP visualization of the sample, coloured with clustering performed and scoring-based cell types.  
     - **`python3 analyses/celltype-annotation-osteosarcoma/scripts/step2-celltype-aucell.py`**
 3. **Orthogonal Validation of Cell Type Annotations**
-
+we perform a number of different orthogonal validations of the annotated cell types. 
+    - we concatanate all of the samples together, and confirm whether the sample-level annotated cell types cluster together. 
+        -  **`python3 analyses/celltype-annotation-osteosarcoma/scripts/step3-1-merge.py`**
 4. **Annotation of Malignant Cells**
+after the "normal" cell types have been annotated, we next perform malignant cell inference using infercnvpy. given that osteosarcoma is known to arise from an mesenchymal lineage (specifically osteoblastic), we use the non-mesenchymal cells as the "control" cells, and test for copy number alterations in mesenchymal annotated cells. as some samples have very few non-mesenchymal cells, we subsample 10% of all non-mesenchymal cells in the overall cohort, and use this as the uniform "control" dataset across all of the samples. 
+    -   **`python3 analyses/celltype-annotation-osteosarcoma/scripts/step4-infercnv.py`**
 5. **Post-Processing, Compilation**
 
 ## Input files
@@ -44,7 +48,15 @@ results
 │   └── processing_stats.csv #pre/post doublet removal stats.
 ├── step2-processing
 │   ├── {sample-id}.csv #contains the cell type scores and inferred cell type.  
-│   ├── {sample-id}.png #UMAP visualization w/ clustering and scoring-based cell type annotations.
+│   └── {sample-id}.png #UMAP visualization w/ clustering and scoring-based cell type annotations.
+├── step3-processing
+│   ├── all-samples.h5ad #contains a merged matrix with all samples w/inferred cell types.
+│   └── all-samples.png #UMAP visualization w/ all cells and their cell type annotations
+├── step4-processing
+│   ├── Homo_sapiens.GRCh38.112.gtf.gz #the reference genome to add the chromosome positions to the anndata
+│   ├── normal-subsampled-cells.h5ad #downsampled object of normal cell type-annotated nuclei to use as the control dataset
+│   ├── {sample-id}_infercnv_out.h5ad #infercnv results for each sample
+│   ├── all_samples_malignant_cell_annotation.csv #malignant cell annotations for all mesenchymal cells in the cohort
 └── README.md
 ```
 
